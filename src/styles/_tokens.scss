@@ -1,0 +1,80 @@
+// SmartOps design tokens. Palette: harbour teal + signal colours reserved for SLA / status meaning.
+:root {
+  color-scheme: light;
+  --bg: #f1f5f6;
+  --surface: #ffffff;
+  --surface-2: #f7f9fa;
+  --sunken: #ebf0f2;
+  --line: #dce3e7;
+  --line-2: #c6d2d8;
+  --text: #14232b;
+  --text-2: #4e616b;
+  --text-3: #70838d;
+
+  --brand: #0a6b7c;
+  --brand-hover: #085766;
+  --brand-soft: #dceff2;
+  --brand-ink: #05414c;
+  --on-brand: #ffffff;
+
+  --side: #0b2830;
+  --side-2: #12363f;
+  --side-text: #a9c2c9;
+  --side-strong: #ffffff;
+  --side-accent: #5fd0dc;
+  --side-line: rgba(255, 255, 255, 0.08);
+
+  --ok: #23805c;       --ok-soft: #ddf2e8;
+  --warn: #a8690a;     --warn-soft: #faebcb;
+  --danger: #be3a30;   --danger-soft: #fadfdc;
+  --info: #3c68ae;     --info-soft: #e0eaf7;
+  --violet: #6455b0;   --violet-soft: #e8e4f6;
+  --muted: #5f717b;    --muted-soft: #e6ebee;
+
+  --shadow-pop: 0 12px 32px -8px rgba(10, 35, 43, 0.28), 0 2px 6px rgba(10, 35, 43, 0.08);
+  --shadow-modal: 0 24px 64px -12px rgba(5, 25, 32, 0.45);
+  --scrim: rgba(8, 24, 30, 0.5);
+
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+
+  --font: 'Schibsted Grotesk Variable', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  --sidebar-w: 236px;
+  --topbar-h: 56px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0a1317;
+  --surface: #101c22;
+  --surface-2: #142329;
+  --sunken: #0c171b;
+  --line: #203139;
+  --line-2: #2d434c;
+  --text: #e4eef1;
+  --text-2: #9db2ba;
+  --text-3: #7a909a;
+
+  --brand: #3ebbcb;
+  --brand-hover: #63cbd8;
+  --brand-soft: #123943;
+  --brand-ink: #a9e6ee;
+  --on-brand: #04252b;
+
+  --side: #071a20;
+  --side-2: #0f2a32;
+  --side-text: #87a1a9;
+  --side-line: rgba(255, 255, 255, 0.06);
+
+  --ok: #4cc38f;       --ok-soft: #12332a;
+  --warn: #e7b04c;     --warn-soft: #3a3010;
+  --danger: #f07166;   --danger-soft: #3e1d1b;
+  --info: #7fa8e8;     --info-soft: #172b47;
+  --violet: #a596ea;   --violet-soft: #2a2548;
+  --muted: #8da0a9;    --muted-soft: #1b2a31;
+
+  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-modal: 0 24px 64px -12px rgba(0, 0, 0, 0.7);
+  --scrim: rgba(2, 8, 10, 0.66);
+}
