@@ -4,7 +4,6 @@ import { filter } from 'rxjs';
 import { ACCESS } from '../core/models/models';
 import { AuthService } from '../core/services/auth.service';
 import { DirectoryService } from '../core/services/directory.service';
-import { NotificationHubService } from '../core/services/notification-hub.service';
 import { ThemeService } from '../core/services/theme.service';
 import { IconComponent, IconName } from '../shared/ui/icon.component';
 import { NotificationBellComponent } from './notification-bell.component';
@@ -49,11 +48,26 @@ const NAV: { title: string; items: NavItem[] }[] = [
     .link:hover { background: var(--side-line); color: var(--side-strong); text-decoration: none; }
     .link.active { background: var(--side-2); color: var(--side-strong); }
     .link.active::before { content: ''; position: absolute; left: -10px; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: var(--side-accent); }
-    .side-foot { padding: 12px 18px; border-top: 1px solid var(--side-line); font-size: 12.5px; display: flex; align-items: center; gap: 8px; }
-    .pulse { width: 8px; height: 8px; border-radius: 50%; background: #7d8f96; }
-    .pulse.live { background: #4cc38f; box-shadow: 0 0 0 0 rgba(76, 195, 143, 0.6); animation: pulse 2.4s infinite; }
-    .pulse.connecting, .pulse.reconnecting { background: #e7b04c; }
-    @keyframes pulse { 70% { box-shadow: 0 0 0 7px rgba(76, 195, 143, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 195, 143, 0); } }
+    .side-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px 18px;
+      border: 0;
+      border-top: 1px solid var(--side-line);
+      background: none;
+      color: var(--side-text);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+    .side-logout:hover {
+      background: var(--side-line);
+      color: var(--side-strong);
+    }
 
     .main { margin-left: var(--sidebar-w); min-height: 100dvh; display: flex; flex-direction: column; }
     .topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 8px; height: var(--topbar-h); padding: 0 24px;
@@ -288,10 +302,10 @@ const NAV: { title: string; items: NavItem[] }[] = [
             </div>
           }
         </nav>
-        <div class="side-foot" [title]="hubTitle()">
-          <span [class]="'pulse ' + hub.status()"></span>
-          {{ hubLabel() }}
-        </div>
+        <button type="button" class="side-logout" (click)="signOut()">
+          <app-icon name="logout" [size]="17" />
+          <span>Log out</span>
+        </button>
       </aside>
 
       @if (navOpen()) { <div class="scrim" (click)="navOpen.set(false)"></div> }
@@ -367,7 +381,6 @@ export class ShellComponent {
   protected readonly auth = inject(AuthService);
   protected readonly dir = inject(DirectoryService);
   protected readonly theme = inject(ThemeService);
-  protected readonly hub = inject(NotificationHubService);
   private readonly router = inject(Router);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
@@ -399,18 +412,6 @@ export class ShellComponent {
       title: g.title,
       items: g.items.filter((i) => i.roles === null || this.auth.hasAnyRole(i.roles)),
     })).filter((g) => g.items.length > 0),
-  );
-
-  protected readonly hubLabel = computed(() => {
-    switch (this.hub.status()) {
-      case 'live': return 'Live updates on';
-      case 'connecting': return 'Connecting…';
-      case 'reconnecting': return 'Reconnecting…';
-      default: return 'Live updates off';
-    }
-  });
-  protected readonly hubTitle = computed(() =>
-    this.hub.status() === 'offline' ? 'Real-time notifications are not connected. The list still refreshes when you reload.' : 'Real-time notifications connection',
   );
 
   constructor() {
