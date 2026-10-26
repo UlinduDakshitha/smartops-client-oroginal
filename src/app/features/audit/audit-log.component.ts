@@ -10,6 +10,7 @@ import { PaginationComponent } from '../../shared/ui/pagination.component';
 
 const SIZE = 25;
 
+
 @Component({
   selector: 'app-audit-log',
   imports: [IconComponent, PaginationComponent, EmptyStateComponent, DateTimePipe],
