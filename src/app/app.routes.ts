@@ -9,6 +9,7 @@ export const routes: Routes = [
     title: 'Sign in · SmartOps',
     loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
   },
+  
   {
     path: 'register',
     canActivate: [guestGuard],
