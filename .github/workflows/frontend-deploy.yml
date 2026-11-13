@@ -1,0 +1,83 @@
+
+name: SmartOps Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: smartops-frontend-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular application
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f dist/smartops-web/browser/index.html
+          echo "Angular production build verified"
+
+      - name: Create deployment archive
+        run: |
+          tar -czf smartops-frontend.tar.gz \
+            -C dist/smartops-web/browser .
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ORACLE_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/smartops_key
+          chmod 600 ~/.ssh/smartops_key
+          ssh-keyscan -H "${{ secrets.ORACLE_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload frontend archive
+        run: |
+          scp -i ~/.ssh/smartops_key \
+            smartops-frontend.tar.gz \
+            ${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }}:/tmp/smartops-frontend.tar.gz
+
+      - name: Deploy frontend to Nginx
+        run: |
+          ssh -i ~/.ssh/smartops_key \
+            ${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }} '
+              set -e
+
+              sudo mkdir -p /var/www/smartops
+
+              sudo tar -xzf /tmp/smartops-frontend.tar.gz \
+                -C /var/www/smartops
+
+              sudo chown -R www-data:www-data /var/www/smartops
+              sudo nginx -t
+              sudo systemctl reload nginx
+
+              rm -f /tmp/smartops-frontend.tar.gz
+
+              curl -fsS http://localhost/ > /dev/null
+
+              echo "SmartOps frontend deployment successful"
+            '
